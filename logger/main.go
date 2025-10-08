@@ -46,14 +46,14 @@ func (l *Logger) Fplainf(stream io.Writer, ptrn string, objs ...any) {
 	fmt.Fprintf(
 		stream,
 		ptrn,
-		fmt.Sprint(objs...),
+		objs...,
 	)
 }
 
 func (l *Logger) Fplain(stream io.Writer, objs ...any) {
 	fmt.Fprint(
 		stream,
-		fmt.Sprint(objs...),
+		objs...,
 	)
 }
 
@@ -87,4 +87,8 @@ func (l *Logger) Major(str string, color ansi.Ansi) {
 
 func (l *Logger) Minor(str string, color ansi.Ansi) {
 	l.Fplainf(os.Stdout, " %s%s->%s %s\n", ansi.Bold, color, ansi.Reset, str)
+}
+
+func (l *Logger) Colon(str string, color ansi.Ansi) {
+	l.Fplainf(os.Stdout, " %s%s::%s %s\n", ansi.Bold, color, ansi.Reset, str)
 }
