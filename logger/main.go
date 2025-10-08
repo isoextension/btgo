@@ -65,30 +65,30 @@ func (l *Logger) Plainln(objs ...any) {
 	fmt.Println(objs...)
 }
 
-func (l *Logger) Info(str string) {
+func (l *Logger) Info(objs ...any) {
 	l.Logln(os.Stdout, "INFO", ansi.White, str)
 }
 
-func (l *Logger) Debug(str string) {
-	l.Logln(os.Stdout, "DEBUG", ansi.Blue, str)
+func (l *Logger) Debug(objs ...any) {
+	l.Logln(os.Stdout, "DEBUG", ansi.Blue, objs...)
 }
 
-func (l *Logger) Warning(str string) {
-	l.Logln(os.Stderr, "WARN", ansi.Yellow, str)
+func (l *Logger) Warning(objs ...any) {
+	l.Logln(os.Stderr, "WARN", ansi.Yellow, objs...)
 }
 
-func (l *Logger) Error(str string) {
-	l.Logln(os.Stderr, "ERR", ansi.Red, str)
+func (l *Logger) Error(objs ...any) {
+	l.Logln(os.Stderr, "ERR", ansi.Red, objs...)
 }
 
-func (l *Logger) Major(str string, color ansi.Ansi) {
-	l.Fplainf(os.Stdout, "  %s%s==>%s %s\n", ansi.Bold, color, ansi.Reset, str)
+func (l *Logger) Major(color ansi.Ansi, objs ...any) {
+	l.Fplainf(os.Stdout, "  %s%s==>%s %s\n", ansi.Bold, color, ansi.Reset, fmt.Sprint(objs...))
 }
 
-func (l *Logger) Minor(str string, color ansi.Ansi) {
-	l.Fplainf(os.Stdout, " %s%s->%s %s\n", ansi.Bold, color, ansi.Reset, str)
+func (l *Logger) Minor(color ansi.Ansi, objs ...any) {
+	l.Fplainf(os.Stdout, " %s%s->%s %s\n", ansi.Bold, color, ansi.Reset, fmt.Sprint(objs...))
 }
 
-func (l *Logger) Colon(str string, color ansi.Ansi) {
-	l.Fplainf(os.Stdout, " %s%s::%s %s\n", ansi.Bold, color, ansi.Reset, str)
+func (l *Logger) Colon(color ansi.Ansi, objs ...any) {
+	l.Fplainf(os.Stdout, " %s%s::%s %s\n", ansi.Bold, color, ansi.Reset, fmt.Sprint(objs...))
 }
