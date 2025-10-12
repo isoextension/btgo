@@ -66,7 +66,7 @@ func (l *Logger) Plainln(objs ...any) {
 }
 
 func (l *Logger) Info(objs ...any) {
-	l.Logln(os.Stdout, "INFO", ansi.White, str)
+	l.Logln(os.Stdout, "INFO", ansi.White, objs...)
 }
 
 func (l *Logger) Debug(objs ...any) {
@@ -82,11 +82,11 @@ func (l *Logger) Error(objs ...any) {
 }
 
 func (l *Logger) Major(color ansi.Ansi, objs ...any) {
-	l.Fplainf(os.Stdout, "  %s%s==>%s %s\n", ansi.Bold, color, ansi.Reset, fmt.Sprint(objs...))
+	l.Fplainf(os.Stdout, "  %s%s|=>%s %s\n", ansi.Bold, color, ansi.Reset, fmt.Sprint(objs...))
 }
 
 func (l *Logger) Minor(color ansi.Ansi, objs ...any) {
-	l.Fplainf(os.Stdout, " %s%s->%s %s\n", ansi.Bold, color, ansi.Reset, fmt.Sprint(objs...))
+	l.Fplainf(os.Stdout, " %s%s|->%s %s\n", ansi.Bold, color, ansi.Reset, fmt.Sprint(objs...))
 }
 
 func (l *Logger) Colon(color ansi.Ansi, objs ...any) {
