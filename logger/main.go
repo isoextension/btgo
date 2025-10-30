@@ -3,6 +3,7 @@
 package logger
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -15,12 +16,27 @@ import (
 type Logger struct {
 	prefix string
 	mutex  sync.Mutex
+	stream *io.Writer
 }
 
+// Level is the log level... of course
+type Level int
+
+const (
+	Trace Level = iota // 0
+	Debug              // 1
+	Info               // 2
+	Warning            // 3
+	Error              // 4
+	Fatal              // 5
+)
+
 // New creates and returns a new Logger with the given prefix.
-func New(prefix string) *Logger {
-	return &Logger{prefix: prefix}
+func New(prefix string, stream *io.Writer) *Logger {
+	return &Logger{prefix: prefix, stream: stream}
 }
+
+/// ESSENTIAL ///
 
 // Logln writes a formatted log line to the specified stream,
 // including a log level, color, and automatic newline.
@@ -54,6 +70,8 @@ func (l *Logger) Logf(stream io.Writer, level string, color ansi.Ansi, ptrn stri
 		fmt.Sprintf(ptrn, objs...),
 	)
 }
+
+/// PLAIN ///
 
 // Fplainf writes formatted text to a specified stream without
 // additional log decorations or automatic newlines.
@@ -91,6 +109,8 @@ func (l *Logger) Plainln(objs ...any) {
 	defer l.mutex.Unlock()
 	fmt.Println(objs...)
 }
+
+/// LEVELED ///
 
 // Info logs informational messages to stdout
 func (l *Logger) Info(objs ...any) {
@@ -142,6 +162,8 @@ func (l *Logger) Errorf(format string, objs ...any) {
     l.Logln(os.Stderr, "ERROR", ansi.Red, []any{message})
 }
 
+/// BASIC ///
+
 // BasicInfo prints like Info with a different format.  i  hello world
 func (l *Logger) BasicInfo(objs ...any) {
     l.Fplainf(os.Stdout, "%si%s  %s\n", ansi.BrightWhite, ansi.Reset, fmt.Sprint(objs...))
@@ -172,7 +194,7 @@ func (l *Logger) BasicError(objs ...any) {
 // BasicErrorf prints like Error with a different format and a format string   x  oopsies
 func (l *Logger) BasicErrorf(format string, objs ...any) {
     message := fmt.Sprintf(format, objs...)
-    l.Fplainf(os.Stdout, "%sx%s %s\n", ansi.BrightRed.String(), ansi.Reset, message)
+    l.Fplainf(os.Stdout, "%sx%s %s", ansi.BrightRed.String(), ansi.Reset, message)
 }
 
 // BasicFatal prints like Fatal with a different format   x_x  oopsies
@@ -183,9 +205,10 @@ func (l *Logger) BasicFatal(objs ...any) {
 // BasicFatalf prints like Fatal with a different format and a format string   x_x  oopsies
 func (l *Logger) BasicFatalf(format string, objs ...any) {
     message := fmt.Sprintf(format, objs...)
-    l.Fplainf(os.Stdout, "%s%sx_x%s %s\n", ansi.Bold.String(), ansi.Red.String(), ansi.Reset, message)
+    l.Fplainf(os.Stdout, "%s%sx_x%s %s", ansi.Bold.String(), ansi.Red.String(), ansi.Reset, message)
 }
 
+/// SYSTEM STYLED ///
 
 // Major logs major events such as warnings, errors, or important tasks,
 // styled in mkinitcpio-like formatting.
@@ -208,4 +231,19 @@ func (l *Logger) Colon(color ansi.Ansi, objs ...any) {
 	l.mutex.Lock()
 	defer l.mutex.Unlock()
 	l.Fplainf(os.Stdout, " %s%s::%s %s\n", ansi.Bold, color, ansi.Reset, fmt.Sprint(objs...))
+}
+
+/// MISC ///
+
+func (l *Logger) SetPrefix(prefix string) (*Logger, error) {
+	if prefix == "" {
+		return l, errors.New("prefix cannot be empty")
+	}
+	l.prefix = prefix
+	return l, nil
+}
+
+func (l *Logger) SetDefaultStream(stream *io.Writer) *Logger {
+	l.stream = stream
+	return l
 }
