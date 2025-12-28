@@ -29,5 +29,5 @@ import "github.com/isoextension/btgo"
 ```
 ---
 <footer>
-made by [[[isoextension](https://linktr.ee/isoextension)]] with ❤️
+made by isoextension with ❤️
 </footer>
