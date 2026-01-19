@@ -1,6 +1,6 @@
-// Package logger provides a simple structured logging system
+// Package taylog provides a simple structured logging system
 // with wrappers for fmt, os, and custom formatting options.
-package logger
+package taylog
 
 import (
 	"errors"
